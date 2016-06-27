@@ -111,12 +111,16 @@ class Http implements TransportInterface
     /**
      * @param $sql
      * @param $format
+     *
+     * @return mixed|void
      */
     public function execute($sql, $format)
     {
         $response = $this->httpClient->request('POST', null, [
-            'query' => $this->prepareQuery($sql, $format),
+            'body' => $this->prepareQueryFormat($sql, $format),
         ]);
+
+        return $format->output($response->getBody()->getContents());
     }
 
 
@@ -132,6 +136,7 @@ class Http implements TransportInterface
 
         return ['query' => $sql];
     }
+
 
     /**
      * @param string $sql

@@ -261,7 +261,7 @@ class Client
      */
     public function replicas($table)
     {
-        $sql = 'SELECT * FROM system.parts WHERE table=' . $table;
+        $sql = 'SELECT * FROM system.replicas WHERE table=' . $table;
         $result = $this->query($sql);
 
         return $result->fetchAll();
@@ -284,6 +284,22 @@ class Client
         $result = $this->query($sql);
 
         return $result->fetchAll();
+    }
+
+    public function createTable($dbName, $tableName, $engine, $columns = [], $ifNotExists = false, $temporary = false)
+    {
+
+        $sql = 'CREATE ' . $dbName . '.' . $tableName . '(';
+
+        foreach ($columns as $column) {
+            $sql .= $column['name'] . ' ' . $column['type'];
+        }
+
+        $sql .= ') ';
+
+        $sql .= 'ENGINE = ' . $engine;
+
+        $result = $this->execute($sql);
     }
 
 
