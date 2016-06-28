@@ -5,6 +5,7 @@ namespace ClickHouse\Transport;
 
 use ClickHouse\Driver\Connection;
 use ClickHouse\Format\AbstractFormat;
+use ClickHouse\Statement;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
@@ -91,21 +92,46 @@ class Http implements TransportInterface
         $this->httpClient = new Client($httpClientSettings);
     }
 
+
+    /**
+     * Prepares a statement for execution and returns a Statement object.
+     *
+     * @param string $prepareString
+     *
+     * @return Statement
+     */
+    public function prepare($prepareString)
+    {
+        return new Statement($this, $prepareString);
+    }
+
     /**
      * @param  string $sql
-     * @param   $format
      *
-     * @return AbstractFormat
+     * @return Statement
      *
      * @throws \RuntimeException
      */
-    public function query($sql, $format)
+    public function query($sql)
     {
+        $stmt = $this->prepare($sql);
+        $stmt->executeSelectStatement();
+
+        return $stmt;
+    }
+
+    /**
+     * @param Statement $statement
+     * @return string
+     */
+    public function executeStatement(Statement $statement)
+    {
+        $sql = $statement->toSql();
         $response = $this->httpClient->request('GET', null, [
-            'query' => $this->prepareQuery($sql, $format),
+            'query' => $this->prepareQuery($sql),
         ]);
 
-        return $format->output($response->getBody()->getContents());
+        return $response->getBody()->getContents();
     }
 
     /**
@@ -130,22 +156,9 @@ class Http implements TransportInterface
      *
      * @return array
      */
-    protected function prepareQuery($sql, AbstractFormat $format)
+    protected function prepareQuery($sql)
     {
-        $sql = $this->prepareQueryFormat($sql, $format);
-
         return ['query' => $sql];
     }
 
-
-    /**
-     * @param string $sql
-     * @param AbstractFormat $format
-     * @return string
-     * @internal param string $formatName
-     */
-    protected function prepareQueryFormat($sql, AbstractFormat $format)
-    {
-        return $sql . ' FORMAT ' . $format->getName();
-    }
 }

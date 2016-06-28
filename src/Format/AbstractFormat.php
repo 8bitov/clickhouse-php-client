@@ -9,20 +9,6 @@ namespace ClickHouse\Format;
 abstract class AbstractFormat
 {
 
-    /**
-     *
-     */
-    CONST FETCH_ONE = 'fetch_one';
-
-    /**
-     *
-     */
-    CONST FETCH_ALL = 'fetch_all';
-
-    /**
-     *
-     */
-    CONST FETCH_COLUMN = 'fetch_column';
 
     /**
      * @var mixed|string
@@ -60,40 +46,21 @@ abstract class AbstractFormat
      */
     protected $rows_before_limit_at_least;
 
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return static::NAME;
-    }
-
-    /**
-     *
-     */
-    public function input()
+    public function __construct()
     {
 
     }
 
     /**
-     * @param $rawResult
-     * @return $this
+     * @param $response
      */
-    public function output($rawResult)
+    public function output($response)
     {
-        $this->rawResult = $rawResult;
-        $this->parseRawOutput($rawResult);
-
-        return $this;
+        $this->rawResult = $response;
+        $this->parseRawResult();
     }
 
-    /**
-     * @param $rawResult
-     * @return mixed
-     */
-    abstract public function parseRawOutput($rawResult);
+    abstract protected function parseRawResult();
 
     /**
      * @return mixed|string
@@ -118,34 +85,7 @@ abstract class AbstractFormat
     {
         return $this->meta;
     }
-
-
-    /**
-     * @return array
-     */
-    public function fetchAll()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function fetchOne()
-    {
-        return current($this->data);
-    }
-
-    /**
-     * @param $name
-     * @return mixed
-     */
-    public function fetchColumn($name)
-    {
-        $current = current($this->data);
-
-        return $current->{$name};
-    }
+    
 
     /**
      * @return \stdClass
@@ -178,4 +118,19 @@ abstract class AbstractFormat
     {
         return $this->rows_before_limit_at_least;
     }
+
+    public function getName()
+    {
+        return static::NAME;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+
 }

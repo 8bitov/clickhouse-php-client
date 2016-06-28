@@ -6,9 +6,9 @@ class JSON extends AbstractFormat
 {
     const NAME = 'JSON';
 
-    public function parseRawOutput($rawResult)
+    protected function parseRawResult()
     {
-        $this->rawResult = $rawResult;
+        $rawResult = $this->rawResult;
 
         $this->result = json_decode($rawResult);
 
