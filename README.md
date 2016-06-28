@@ -48,3 +48,30 @@ fetchOne - возвращает первую строку
 fetchColumn - возвращает значение указанного столбца
 
 ## Выполнить INSERT/UPDATE/ALERT запрос
+
+## Системные запросы
+
+### tables
+
+Информация о таблицах, содержит столбцы database, name, engine типа String.
+
+$client->system()->tables();
+
+### databases
+
+Информация о базах
+
+$client->system()->databases();
+
+
+### clusters
+
+ информация о доступных в конфигурационном файле кластерах и серверах, которые в них входят.
+
+$client->system()->clusters();
+
+## Настройки 
+
+$client->settings()->max_memory_usage; //получить значение настроки
+
+$client->settings()->max_memory_usage = 10G;  //изменить настройку для текущий сессии
