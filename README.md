@@ -15,13 +15,10 @@ $client->ping();
 
 ## Выполнить SELECT запрос
 
-$client->query($sql, $formatName);
+$client->query($sql);
 
 $sql - строка с sql запросом
 
-$formatName (не обязательный параметр) - формат вывода данных.
-
-По умолчанию: JSON
 
 Возвращает объект класса Statement
 
