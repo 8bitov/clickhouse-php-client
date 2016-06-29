@@ -3,7 +3,7 @@ https://clickhouse.yandex
 
 
 ## Документация
-https://8bitgroup.atlassian.net/wiki/pages/viewpage.action?pageId=33292360
+https://clickhouse.readme.io/
 
 ## Создание клиента
 
