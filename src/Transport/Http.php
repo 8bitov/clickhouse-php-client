@@ -2,9 +2,11 @@
 
 namespace ClickHouse\Transport;
 
-
-use ClickHouse\Driver\Connection;
 use ClickHouse\Format\AbstractFormat;
+use ClickHouse\Query\ExecuteQuery;
+use ClickHouse\Query\Query;
+use ClickHouse\Query\InsertQuery;
+use ClickHouse\Query\SelectQuery;
 use ClickHouse\Statement;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\CurlHandler;
@@ -25,31 +27,23 @@ class Http implements TransportInterface
     /**
      * @var
      */
-    private $host;
+    private $host = 'http://127.0.0.1';
 
-    /**
-     * @var array
-     */
-    private $allowRedirects = [
-        'max' => 5,
-        'strict' => false,
-        'referer' => true,
-        'protocols' => ['http', 'https'],
-        'track_redirects' => false,
-    ];
     /**
      * @var
      */
-    private $port;
+    private $port = 8123;
     /**
      * @var null
      */
-    private $username = null;
+    private $username = 'default';
     /**
      * @var null
      */
     private $password = null;
+
     /**
+     * Float describing the timeout of the request in seconds. Use 0 to wait indefinitely (the default behavior).
      * @var int
      */
     private $timeout = 0;
@@ -60,13 +54,27 @@ class Http implements TransportInterface
      * @param $port
      * @param null $username
      * @param null $password
+     * @param array $requestOptions
      */
-    public function __construct($host, $port, $username = null, $password = null)
+    public function __construct($host = null, $port = null, $username = null, $password = null, array $requestOptions = [])
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->username = $username;
-        $this->password = $password;
+        if (null !== $host)
+            $this->host = $host;
+
+        if (null !== $port)
+            $this->port = $port;
+
+        if(null !== $username)
+            $this->username = $username;
+
+        if(null !== $password)
+            $this->password = $password;
+
+
+        if (array_key_exists('timeout', $requestOptions)) {
+            $this->timeout = $requestOptions['timeout'];
+        }
+
         $this->connect();
     }
 
@@ -81,7 +89,6 @@ class Http implements TransportInterface
         $httpClientSettings = [
             'base_uri' => $this->host . ':' . $this->port,
             'timeout' => $this->timeout,
-            'allow_redirects' => $this->allowRedirects,
             'handler' => $stack,
         ];
 
@@ -94,71 +101,88 @@ class Http implements TransportInterface
 
 
     /**
-     * Prepares a statement for execution and returns a Statement object.
-     *
-     * @param string $prepareString
-     *
-     * @return Statement
-     */
-    public function prepare($prepareString)
-    {
-        return new Statement($this, $prepareString);
-    }
-
-    /**
      * @param  string $sql
      *
+     * @param array $bindings
      * @return Statement
-     *
      * @throws \RuntimeException
      */
-    public function query($sql)
+    public function select($sql, array $bindings = [])
     {
-        $stmt = $this->prepare($sql);
-        $stmt->executeSelectStatement();
+        $query = new SelectQuery($this, $sql, $bindings);
 
-        return $stmt;
-    }
-
-    /**
-     * @param Statement $statement
-     * @return string
-     */
-    public function executeStatement(Statement $statement)
-    {
-        $sql = $statement->toSql();
         $response = $this->httpClient->request('GET', null, [
-            'query' => $this->prepareQuery($sql),
+            'query' => $this->prepareQueryGetRequest($query),
         ]);
 
-        return $response->getBody()->getContents();
+        $data = $response->getBody()->getContents();
+
+        return new Statement($data, $query, $this);
+    }
+
+
+    /**
+     * @param string $table
+     * @param array $values
+     * @param array $columns
+     * @param string $formatName
+     *
+     * @return Statement
+     *
+     */
+    public function insert($table, array $columns = [], array $values, $formatName = null)
+    {
+        $query = new InsertQuery($this, $table, $columns, $values, $formatName);
+
+        $response = $this->httpClient->request('POST', null, [
+            'body' => $values,
+        ]);
+
+        $data = $response->getBody()->getContents();
+
+        return new Statement($data, $query, $this);
     }
 
     /**
      * @param $sql
-     * @param $format
+     * @param array $bindings
      *
-     * @return mixed|void
+     * @return Statement
+     * @throws \RuntimeException
      */
-    public function execute($sql, $format)
+    public function execute($sql, $bindings = [])
     {
+        $query = new ExecuteQuery($this, $sql, $bindings);
+
         $response = $this->httpClient->request('POST', null, [
-            'body' => $this->prepareQueryFormat($sql, $format),
+            'body' => $query->toSql(),
         ]);
 
-        return $format->output($response->getBody()->getContents());
+        $data = $response->getBody()->getContents();
+
+        return new Statement($data, $query, $this);
     }
 
 
     /**
-     * @param string $sql
-     * @param $format
+     * @param Query $query
      *
      * @return array
+     *
      */
-    protected function prepareQuery($sql)
+    protected function prepareQueryGetRequest(Query $query)
     {
-        return ['query' => $sql];
+        return ['query' => $query->toSql()];
     }
 
+    /**
+     * @param string $formatName
+     * @return AbstractFormat
+     */
+    public function formatFactory($formatName)
+    {
+        $class = "\\ClickHouse\\Format\\" . $formatName;
+        $format = new $class();
+        return $format;
+    }
 }

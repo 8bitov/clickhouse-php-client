@@ -12,12 +12,23 @@ class JSON extends AbstractFormat
 
         $this->result = json_decode($rawResult);
 
-        $this->meta = $this->result->meta;
-        $this->data = $this->result->data;
-//        $this->totals = $this->result->totals;
-        //   $this->extremes = $this->result->extremes;
-        $this->rows = $this->result->rows;
-        //     $this->rows_before_limit_at_least = $this->result->rows_before_limit_at_least;
+        if (property_exists($this->result, 'meta'))
+            $this->meta = $this->result->meta;
+
+        if (property_exists($this->result, 'data'))
+            $this->data = $this->result->data;
+
+        if (property_exists($this->result, 'totals'))
+            $this->totals = $this->result->totals;
+
+        if (property_exists($this->result, 'extremes'))
+            $this->extremes = $this->result->extremes;
+
+        if (property_exists($this->result, 'rows'))
+            $this->rows = $this->result->rows;
+
+        if (property_exists($this->result, 'rows_before_limit_at_least'))
+            $this->rows_before_limit_at_least = $this->result->rows_before_limit_at_least;
 
         return $this;
     }

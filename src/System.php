@@ -21,7 +21,7 @@ class System
     public function numbers($limit = 10)
     {
         $sql = 'SELECT number FROM system.numbers LIMIT ' . $limit;
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -31,12 +31,16 @@ class System
      *
      * @return array
      */
-    public function tables()
+    public function tables($table = null)
     {
-        $sql = 'SHOW TABLES';
-        $result = $this->query($sql);
+        $sql = 'SELECT * FROM system.tables';
 
-        return $result->fetchAll();
+        if (null !== $table) {
+            $sql .= ' WHERE name=:name';
+        }
+
+        return $this->client->select($sql, ['name'=>$table]);
+
     }
 
     /**
@@ -48,7 +52,7 @@ class System
     public function databases()
     {
         $sql = 'SHOW DATABASES';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -59,7 +63,7 @@ class System
     public function processes()
     {
         $sql = 'SHOW PROCESSLIST';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -74,7 +78,7 @@ class System
     public function events()
     {
         $sql = 'SELECT * FROM system.events';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -82,27 +86,33 @@ class System
     /**
      * информация о доступных в конфигурационном файле кластерах и серверах, которые в них входят.
      *
-     * @return array
+     * @return Statement
      */
     public function clusters()
     {
         $sql = 'SELECT * FROM system.clusters';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
-        return $result->fetchAll();
+        return $result;
     }
 
     /**
      * Содержит информацию о столбцах всех таблиц.
      *
-     * @return array
+     * @param null|string $table
+     * @return Statement
      */
-    public function columns()
+    public function columns($table = null)
     {
         $sql = 'SELECT * FROM system.columns';
-        $result = $this->query($sql);
 
-        return $result->fetchAll();
+        if (null !== $table) {
+            $sql .= ' WHERE table=:table';
+        }
+
+        $result = $this->client->select($sql, ['table'=>$table]);
+
+        return $result;
     }
 
     /**
@@ -112,7 +122,7 @@ class System
     public function dictionaries()
     {
         $sql = 'SELECT * FROM system.dictionaries';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -124,7 +134,7 @@ class System
     public function functions()
     {
         $sql = 'SELECT * FROM system.functions';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -136,7 +146,7 @@ class System
     public function merges()
     {
         $sql = 'SELECT * FROM system.merges';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -148,7 +158,7 @@ class System
     public function parts()
     {
         $sql = 'SELECT * FROM system.parts';
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -160,7 +170,7 @@ class System
     public function replicas($table)
     {
         $sql = 'SELECT * FROM system.replicas WHERE table=' . $table;
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }
@@ -179,7 +189,7 @@ class System
     public function zookeeper($path)
     {
         $sql = 'SELECT * FROM system.zookeeper WHERE $path = ' . $path;
-        $result = $this->query($sql);
+        $result = $this->client->select($sql);
 
         return $result->fetchAll();
     }

@@ -2,82 +2,33 @@
 namespace ClickHouse;
 
 use ClickHouse\Format\AbstractFormat;
-use ClickHouse\Format\JSON;
 use ClickHouse\Transport\TransportInterface;
+use ClickHouse\Query\Query;
 
 class Statement
 {
-    /**
-     *
-     */
-    CONST FETCH_ONE = 'fetch_one';
 
-    /**
-     *
-     */
-    CONST FETCH_ALL = 'fetch_all';
-
-    /**
-     *
-     */
-    CONST FETCH_COLUMN = 'fetch_column';
-
-   
     /**
      * @var TransportInterface
      */
     private $transport;
 
     /**
-     * @var string
+     * @var Query
      */
     private $query;
-
     /**
      * @var AbstractFormat
      */
-    private $format;
+    private $result;
 
 
-    public function __construct(TransportInterface $transport, $query)
+    public function __construct($data, Query $query = null, TransportInterface $transport)
     {
         $this->transport = $transport;
         $this->query = $query;
-        $this->format = new JSON();
-        $this->prepareQueryFormat();
-    }
+        $this->result = $this->query->getFormat()->output($data);
 
-    /**
-     * @return $this
-     */
-    public function executeSelectStatement()
-    {
-        $response = $this->transport->executeStatement($this);
-        $this->format->output($response);
-
-        return $this;
-    }
-
-
-    /**
-     *
-     */
-    protected function prepareQueryFormat()
-    {
-        $this->query = $this->query . ' FORMAT '. $this->format->getName();
-    }
-
-    /**
-     * @return string
-     */
-    public function toSql()
-    {
-        return $this->query;
-    }
-
-    public function __toString()
-    {
-        return $this->toSql();
     }
 
     /**
@@ -85,28 +36,34 @@ class Statement
      */
     public function fetchAll()
     {
-        return $this->format->getData();
+        return $this->result->getData();
     }
+
     /**
-     * @return mixed
+     * @return \stdClass
      */
     public function fetchOne()
     {
-        return current($this->format->getData());
+        return current($this->result->getData());
     }
+
     /**
      * @param $name
      * @return mixed
      */
     public function fetchColumn($name)
     {
-        $current = current($this->format->getData());
+        $current = current($this->result->getData());
+
         return $current->{$name};
     }
 
+    /**
+     * @return int
+     */
     public function rowCount()
     {
-        return $this->format->getRows();
+        return $this->result->getRows();
     }
 
     /**
@@ -114,7 +71,7 @@ class Statement
      */
     public function getMeta()
     {
-        return  $this->format->getMeta();
+        return $this->result->getMeta();
     }
 
     /**
@@ -125,13 +82,18 @@ class Statement
     {
         $meta = $this->getMeta();
 
-       return array_reduce($meta, function($carry, $item) use ($column) {
-           if ($item->name === $column) {
-               $carry = $item;
-           }
+        return array_reduce($meta, function ($carry, $item) use ($column) {
+            if ($item->name === $column) {
+                $carry = $item;
+            }
 
-           return $carry;
-       });
+            return $carry;
+        });
+    }
+
+    public function getRawResult()
+    {
+        return $this->result->getRawResult();
     }
 
 }

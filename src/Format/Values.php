@@ -4,15 +4,12 @@ namespace ClickHouse\Format;
 
 use ClickHouse\Exception\NotImplementedException;
 
-class TabSeparated extends AbstractFormat
+class Values
 {
-
-    const NAME = 'TabSeparated';
-
-
+    const NAME = 'Values';
 
     protected function parseRawResult()
     {
-        $this->result = $this->getRawResult();
+        throw new NotImplementedException();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace ClickHouse\Transport;
+
 use ClickHouse\Format\JSON;
 use ClickHouse\Format\TabSeparated;
 use ClickHouse\Statement;
@@ -25,21 +26,6 @@ interface TransportInterface
      */
     const BATCH_INSERT_FORMAT = TabSeparated::class;
 
-    /**
-     * @param $sql
-     * @param null $format
-     * @return mixed
-     */
-    public function query($sql);
-
-    /**
-     * @param $sql
-     * @param null $format
-     * @return mixed
-     */
-    public function execute($sql, $format);
-
-    public function executeStatement(Statement $statement);
 
 
 

@@ -53,11 +53,15 @@ abstract class AbstractFormat
 
     /**
      * @param $response
+     * 
+     * @return AbstractFormat
      */
     public function output($response)
     {
         $this->rawResult = $response;
         $this->parseRawResult();
+
+        return $this;
     }
 
     abstract protected function parseRawResult();
