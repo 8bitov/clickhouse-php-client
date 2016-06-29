@@ -2,7 +2,8 @@
 https://clickhouse.yandex
 
 
-# Документация
+## Документация
+https://clickhouse.readme.io/
 
 ## Создание клиента
 
@@ -15,17 +16,14 @@ $client->ping();
 
 ## Выполнить SELECT запрос
 
-$client->query($sql, $formatName);
+$client->query($sql);
 
 $sql - строка с sql запросом
 
-$formatName (не обязательный параметр) - формат вывода данных.
 
-По умолчанию: JSON
+Возвращает объект класса Statement
 
-Возвращает объект класса AbstractFormat
-
-### интерфейс AbstractFormat
+### интерфейс Statement
 
 getRawResult возвращает данные в сыром виде, так как их вернул сервер.
 
@@ -47,3 +45,38 @@ fetchOne - возвращает первую строку
 
 fetchColumn - возвращает значение указанного столбца
 
+## Выполнить INSERT/ALERT запрос
+
+##№ Выполнить BATCH INSERT запрос
+
+
+## Системные запросы
+
+### tables
+
+Информация о таблицах, содержит столбцы database, name, engine типа String.
+
+$client->system()->tables();
+
+### databases
+
+Информация о базах
+
+$client->system()->databases();
+
+
+### clusters
+
+ информация о доступных в конфигурационном файле кластерах и серверах, которые в них входят.
+
+$client->system()->clusters();
+
+
+### остальное скоро будет здесь
+
+
+## Настройки 
+
+$client->settings()->max_memory_usage; //получить значение настроки
+
+$client->settings()->max_memory_usage = 10G;  //изменить настройку для текущий сессии
