@@ -19,6 +19,7 @@ class SelectQuery extends Query
      */
     public function __construct(TransportInterface $transport, $sql, $bindings = [], $formatName = null)
     {
+        parent::__construct();
         $this->init($transport, $sql, $formatName);
         $this->bindParams($bindings);
     }

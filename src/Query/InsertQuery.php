@@ -27,9 +27,11 @@ class InsertQuery extends Query
      */
     public function __construct(TransportInterface $transport, $table, array $columns = [], array $values, $formatName = null)
     {
+        parent::__construct();
         $sql = $this->prepareSql($table, $columns, $values);
         $this->init($transport, $sql, $formatName);
     }
+
 
     /**
      * @param string $table
@@ -48,11 +50,33 @@ class InsertQuery extends Query
         $sql .= 'VALUES ';
 
         foreach ($values as $row) {
-            $sql .= ' (' . implode($row) . '), ';
+            $sql .= ' (' . implode(',', $this->quote($row)) . '), ';
         }
 
-        $sql = rtrim($sql, ',');
+        $sql = trim($sql, ', ');
 
         return $sql;
+    }
+
+    /**
+     * @param array $row
+     * @return array
+     */
+    protected function quote(array $row)
+    {
+        $grammar = $this->grammar;
+        $quote = function ($value) use ($grammar) {
+            return $grammar->quote($value);
+        };
+        return array_map($quote, $row);
+    }
+
+    /**
+     * @return string
+     */
+    public function toSql()
+    {
+        $this->prepareQueryBindings();
+        return $this->sql;
     }
 }

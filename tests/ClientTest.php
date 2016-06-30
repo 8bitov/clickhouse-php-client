@@ -10,12 +10,46 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     private $client;
 
+    private $tablename = 'all_types_test_table';
+
     /**
      *
      */
     public function setUp()
     {
         $this->client = new \ClickHouse\Client('http://127.0.0.1', 8123);
+
+
+        $this->client->execute(
+        /** @lang SQL */
+            "CREATE TABLE IF NOT EXISTS " . $this->tablename . " (
+            RowId UInt32,
+            RowDate Date,
+            RowUInt8 UInt8,
+            RowInt16 Int16,
+            RowFloat32 Float32,
+            RowString String,
+            RowFixedString FixedString(20),
+            RowDateTime DateTime,
+            RowEnum8 Enum8('hello' = 1, 'world' = 2),
+            RowStringArray Array(String)     
+            ) ENGINE = MergeTree(RowDate, (RowId, RowDate), 8124);"
+        );
+
+    }
+
+    public function tearDown()
+    {
+        $this->client->execute('DROP TABLE IF EXISTS ' . $this->tablename);
+    }
+
+    /**
+     * Заполняет тестовую таблицу, фейковыми данными
+     * @param int $count
+     */
+    public function fixtures($count = 1000)
+    {
+
     }
 
     /**
@@ -66,12 +100,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testCreateTable()
+    public function testCreateDropTable()
     {
 
         $tablename = 'test_create';
-       $this->client->execute(
-            'CREATE TABLE '.$tablename.' (abc UInt8) ENGINE = Memory;'
+        $this->client->execute(
+            'CREATE TABLE ' . $tablename . ' (abc UInt8) ENGINE = Memory;'
         );
 
         $st = $this->client->system()->columns($tablename);
@@ -82,29 +116,35 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
 
         $this->client->execute(
-            'DROP TABLE '.$tablename.';'
+            'DROP TABLE ' . $tablename . ';'
         );
     }
 
-    public function insertOneFormatValuesTest()
+    /**
+     *
+     */
+    public function testInsertFormatValues()
     {
-        $columns = ['test_name', 'test_count'];
-        $data = [['testName', 15]];
-        $statement = $this->client->insert('test', $columns, $data);
-
-        $this->assertEquals(1, $statement->rowCount());
-    }
-
-    public function insertManyFormatValuesTest()
-    {
-        $columns = ['test_name', 'test_count'];
+        $faker = Faker\Factory::create();
+        $columns = ['RowId', 'RowDate', 'RowString'];
         $data = [
-            ['testName', 15],
-            ['test2Name', 30]
+            [$id1 = $faker->randomDigitNotNull, $date1 = $faker->date, $string1 = $faker->word],
+            [$id2 = $faker->randomDigitNotNull, $date2 = $faker->date, $string2 = $faker->word],
         ];
-        $statement = $this->client->insert('test', $columns, $data);
+        $this->client->insert($this->tablename, $columns, $data);
+
+        $statement = $this->client->select('SELECT * FROM '.$this->tablename);
 
         $this->assertEquals(2, $statement->rowCount());
+
+        $all  = $statement->fetchAll();
+        $first = current($all);
+        $this->assertEquals($id1, $first->RowId);
+
+        $last = end($all);
+        $this->assertEquals($id2, $last->RowId);
+
+
     }
 
 

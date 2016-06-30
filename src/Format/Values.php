@@ -4,12 +4,12 @@ namespace ClickHouse\Format;
 
 use ClickHouse\Exception\NotImplementedException;
 
-class Values
+class Values extends  AbstractFormat
 {
     const NAME = 'Values';
 
     protected function parseRawResult()
     {
-        throw new NotImplementedException();
+        $this->result = $this->getRawResult();
     }
 }

@@ -135,7 +135,7 @@ class Http implements TransportInterface
         $query = new InsertQuery($this, $table, $columns, $values, $formatName);
 
         $response = $this->httpClient->request('POST', null, [
-            'body' => $values,
+            'body' => $query->toSql(),
         ]);
 
         $data = $response->getBody()->getContents();

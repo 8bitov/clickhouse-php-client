@@ -31,7 +31,16 @@ abstract class Query
      */
     protected $format;
 
+    /**
+     * @var Grammar
+     */
+    protected $grammar;
 
+    public function __construct()
+    {
+        $this->grammar = new Grammar();
+    }
+    
     /**
      * @param TransportInterface $transport
      * @param string $sql
@@ -48,6 +57,8 @@ abstract class Query
         }
         $this->format = new $formatName();
     }
+
+
 
     /**
      * @return AbstractFormat
@@ -110,7 +121,7 @@ abstract class Query
                 $values[$key] = "'" . implode("','", $value) . "'";
 
             if (null === $value)
-                $values[$key] = 'NULL';
+                $values[$key] = '';
         }
         $this->sql = preg_replace($keys, $values, $this->sql, 1, $count);
 
