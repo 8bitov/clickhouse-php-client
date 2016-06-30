@@ -12,14 +12,14 @@ $client = new \ClickHouse\Client('http://127.0.0.1', 8123);
 
 ## Проверка сервера
 
-$client->ping();
+$bool = $client->ping();
 
 ## Выполнить SELECT запрос
 
-$client->query($sql);
+$client->select($sql, $params);
 
 $sql - строка с sql запросом
-
+$params - массив для биндинга параметров
 
 Возвращает объект класса Statement
 
@@ -45,10 +45,15 @@ fetchOne - возвращает первую строку
 
 fetchColumn - возвращает значение указанного столбца
 
-## Выполнить INSERT/ALERT запрос
+## Выполнить INSERT запрос
 
-##№ Выполнить BATCH INSERT запрос
+$client->insert($table, $columns = [], $values, $formatName = null);
 
+## Выполнить BATCH INSERT запрос
+
+## Выполнить ALTER/CREATE/DROP запросы
+
+$client->execute($sql);
 
 ## Системные запросы
 
