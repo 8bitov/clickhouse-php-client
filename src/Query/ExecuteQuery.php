@@ -14,32 +14,16 @@ class ExecuteQuery extends Query
 {
 
     /**
-     *
-     */
-    const DEFAULT_FORMAT = TabSeparated::class;
-
-    /**
      * Query constructor.
      * @param TransportInterface $transport
      * @param string $sql
      * @param array $bindings
-     * @param null $formatName
      */
-    public function __construct(TransportInterface $transport, $sql, $bindings = [], $formatName = null)
+    public function __construct(TransportInterface $transport, $sql, $bindings = [])
     {
         parent::__construct();
-        $this->init($transport, $sql, $formatName);
+        $this->init($transport, $sql);
         $this->bindParams($bindings);
-    }
-
-    /**
-     * @return string
-     */
-    public function toSql()
-    {
-        $this->prepareQueryBindings();
-      //  $this->prepareQueryFormat();
-        return $this->sql;
     }
 
 }

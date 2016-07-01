@@ -26,15 +26,13 @@ abstract class Query
      * @var array
      */
     protected $bindings = [];
-    /**
-     * @var AbstractFormat
-     */
-    protected $format;
 
     /**
      * @var Grammar
      */
     protected $grammar;
+
+    protected static $format = null;
 
     public function __construct()
     {
@@ -44,28 +42,12 @@ abstract class Query
     /**
      * @param TransportInterface $transport
      * @param string $sql
-     * @param string $formatName
      */
-    protected function init(TransportInterface $transport, $sql, $formatName = null)
+    protected function init(TransportInterface $transport, $sql)
     {
         $this->sql = $sql;
         $this->transport = $transport;
 
-
-        if (null === $formatName) {
-            $formatName = static::DEFAULT_FORMAT;
-        }
-        $this->format = new $formatName();
-    }
-
-
-
-    /**
-     * @return AbstractFormat
-     */
-    public function getFormat()
-    {
-        return $this->format;
     }
 
     /**
@@ -94,7 +76,12 @@ abstract class Query
      */
     protected function prepareQueryFormat()
     {
-        return $this->sql = $this->sql . ' FORMAT ' . $this->format->getName();
+
+        if (null !== static::$format) {
+            $this->sql = $this->sql . ' FORMAT ' . static::$format;
+        }
+
+        return $this->sql;
     }
 
     /**

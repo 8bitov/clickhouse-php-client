@@ -80,13 +80,12 @@ class Client
      * @param string $table
      * @param array $values
      * @param array $columns
-     * @param string $formatName
      *
      * @return mixed|void
      */
-    public function insert($table, $columns = [], $values, $formatName = null)
+    public function insert($table, $columns = [], $values)
     {
-        return $this->transport->insert($table, $columns, $values, $formatName);
+        return $this->transport->insert($table, $columns, $values);
     }
 
     /**

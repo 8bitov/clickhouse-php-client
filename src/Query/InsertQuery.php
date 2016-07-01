@@ -23,13 +23,12 @@ class InsertQuery extends Query
      * @param string $table
      * @param array $columns
      * @param array $values
-     * @param string $formatName
      */
-    public function __construct(TransportInterface $transport, $table, array $columns = [], array $values, $formatName = null)
+    public function __construct(TransportInterface $transport, $table, array $columns = [], array $values)
     {
         parent::__construct();
         $sql = $this->prepareSql($table, $columns, $values);
-        $this->init($transport, $sql, $formatName);
+        $this->init($transport, $sql);
     }
 
 
@@ -71,12 +70,4 @@ class InsertQuery extends Query
         return array_map($quote, $row);
     }
 
-    /**
-     * @return string
-     */
-    public function toSql()
-    {
-        $this->prepareQueryBindings();
-        return $this->sql;
-    }
 }

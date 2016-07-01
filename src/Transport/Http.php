@@ -130,9 +130,9 @@ class Http implements TransportInterface
      * @return Statement
      *
      */
-    public function insert($table, array $columns = [], array $values, $formatName = null)
+    public function insert($table, array $columns = [], array $values)
     {
-        $query = new InsertQuery($this, $table, $columns, $values, $formatName);
+        $query = new InsertQuery($this, $table, $columns, $values);
 
         $response = $this->httpClient->request('POST', null, [
             'body' => $query->toSql(),
@@ -175,14 +175,4 @@ class Http implements TransportInterface
         return ['query' => $query->toSql()];
     }
 
-    /**
-     * @param string $formatName
-     * @return AbstractFormat
-     */
-    public function formatFactory($formatName)
-    {
-        $class = "\\ClickHouse\\Format\\" . $formatName;
-        $format = new $class();
-        return $format;
-    }
 }

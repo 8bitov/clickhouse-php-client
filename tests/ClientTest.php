@@ -135,7 +135,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $statement = $this->client->select('SELECT * FROM '.$this->tablename);
 
-        $this->assertEquals(2, $statement->rowCount());
+        $this->assertEquals(2, $statement->rowsCount());
 
         $all  = $statement->fetchAll();
         $first = current($all);
