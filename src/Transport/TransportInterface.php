@@ -2,8 +2,6 @@
 
 namespace ClickHouse\Transport;
 
-use ClickHouse\Format\JSON;
-use ClickHouse\Format\TabSeparated;
 use ClickHouse\Statement;
 
 /**
@@ -12,21 +10,32 @@ use ClickHouse\Statement;
  */
 interface TransportInterface
 {
+    /**
+     * @param  string $sql
+     *
+     * @param array $bindings
+     * @return Statement
+     * @throws \RuntimeException
+     */
+    public function select($sql, array $bindings = []);
 
     /**
-     * Формат дефолтный для селектов
+     * @param string $table
+     * @param array $values
+     * @param array $columns
+     *
+     * @return Statement
+     * @throws \RuntimeException
+     *
      */
-    const SELECT_FORMAT = JSON::class;
+    public function insert($table, array $columns = [], array $values);
+
     /**
-     * Формат дефолтный для Инсертов
+     * @param $sql
+     * @param array $bindings
+     *
+     * @return Statement
+     * @throws \RuntimeException
      */
-    const INSERT_FORMAT = TabSeparated::class;
-    /**
-     * Формат дефолтный для массовых Инсертов
-     */
-    const BATCH_INSERT_FORMAT = TabSeparated::class;
-
-
-
-
+    public function execute($sql, $bindings = []);
 }

@@ -2,7 +2,6 @@
 
 namespace ClickHouse\Transport;
 
-use ClickHouse\Format\AbstractFormat;
 use ClickHouse\Query\ExecuteQuery;
 use ClickHouse\Query\Query;
 use ClickHouse\Query\InsertQuery;
@@ -125,9 +124,9 @@ class Http implements TransportInterface
      * @param string $table
      * @param array $values
      * @param array $columns
-     * @param string $formatName
      *
      * @return Statement
+     * @throws \RuntimeException
      *
      */
     public function insert($table, array $columns = [], array $values)

@@ -2,7 +2,6 @@
 
 namespace ClickHouse\Query;
 
-use ClickHouse\Format\JSON;
 use ClickHouse\Transport\TransportInterface;
 
 class SelectQuery extends Query

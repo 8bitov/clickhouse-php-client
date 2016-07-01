@@ -1,9 +1,6 @@
 <?php
 namespace ClickHouse\Query;
 
-use ClickHouse\Format\JSON;
-use ClickHouse\Format\Values;
-use ClickHouse\Format\TabSeparated;
 use ClickHouse\Transport\TransportInterface;
 
 /**

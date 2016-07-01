@@ -2,8 +2,6 @@
 
 namespace ClickHouse\Query;
 
-use ClickHouse\Format\AbstractFormat;
-use ClickHouse\Format\JSON;
 use ClickHouse\Transport\TransportInterface;
 
 /**

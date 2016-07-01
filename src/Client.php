@@ -2,9 +2,6 @@
 
 namespace ClickHouse;
 
-use ClickHouse\Format\AbstractFormat;
-use ClickHouse\Format\JSON;
-use ClickHouse\Format\TabSeparated;
 use ClickHouse\Transport\Http;
 use ClickHouse\Transport\TransportInterface;
 

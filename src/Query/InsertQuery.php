@@ -1,8 +1,6 @@
 <?php
 namespace ClickHouse\Query;
 
-use ClickHouse\Format\Values;
-use ClickHouse\Format\TabSeparated;
 use ClickHouse\Transport\TransportInterface;
 
 /**
@@ -11,11 +9,6 @@ use ClickHouse\Transport\TransportInterface;
  */
 class InsertQuery extends Query
 {
-
-    /**
-     *
-     */
-    const DEFAULT_FORMAT = Values::class;
 
     /**
      * InsertQuery constructor.

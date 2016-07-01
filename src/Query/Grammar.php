@@ -11,11 +11,21 @@ class Grammar
      */
     public function getDateFormat()
     {
+        return 'Y-m-d';
+    }
+
+    /**
+     * Get the format for database stored datetimes.
+     *
+     * @return string
+     */
+    public function getDateTimeFormat()
+    {
         return 'Y-m-d H:i:s';
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return string
      */
     public function quote($value)

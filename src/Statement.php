@@ -1,7 +1,6 @@
 <?php
 namespace ClickHouse;
 
-use ClickHouse\Format\AbstractFormat;
 use ClickHouse\Transport\TransportInterface;
 use ClickHouse\Query\Query;
 
@@ -198,7 +197,7 @@ class Statement
     {
         return $this->extremes;
     }
-    
+
     /**
      * @return mixed
      */
