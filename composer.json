@@ -3,7 +3,7 @@
   "license": "MIT",
   "version" : "0.0.3",
   "keywords":    ["clickhouse", "driver", "client", "http"],
-  "homepage":    "https://github.com/8bitov/doctrine2-clickhouse",
+  "homepage":    "https://github.com/8bitov/clickhouse-php-client",
   "authors": [
     {
       "name": "Aleksey Kuznetsov"
