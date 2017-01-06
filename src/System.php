@@ -2,13 +2,17 @@
 
 namespace ClickHouse;
 
+/**
+ * Class System
+ *
+ * @package ClickHouse
+ */
 class System
 {
     private $client;
 
     public function __construct($client, $settings)
     {
-
         $this->client = $client;
         $this->settings = new Settings($client, $settings);
     }
@@ -40,7 +44,6 @@ class System
         }
 
         return $this->client->select($sql, ['name'=>$table]);
-
     }
 
     /**
@@ -193,7 +196,4 @@ class System
 
         return $result->fetchAll();
     }
-
-
-
 }

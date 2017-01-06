@@ -3,7 +3,6 @@
 namespace ClickHouse;
 
 use ClickHouse\Transport\Http;
-use ClickHouse\Transport\TransportInterface;
 
 /**
  * Class Client
@@ -86,7 +85,6 @@ class Client
     }
 
     /**
-     * @param string $sql
      * @param $data
      * @param null $formatName
      * @return mixed
@@ -125,5 +123,4 @@ class Client
     {
         return $this->system;
     }
-    
 }

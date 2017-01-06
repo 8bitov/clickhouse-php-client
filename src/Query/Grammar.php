@@ -2,6 +2,11 @@
 
 namespace ClickHouse\Query;
 
+/**
+ * Class Grammar
+ *
+ * @package ClickHouse\Query
+ */
 class Grammar
 {
     /**
@@ -30,14 +35,17 @@ class Grammar
      */
     public function quote($value)
     {
-        if (is_string($value))
+        if (is_string($value)) {
             return "'" . $value . "'";
+        }
 
-        if (is_array($value))
+        if (is_array($value)) {
             return "'" . implode("','", $value) . "'";
+        }
 
-        if (null === $value)
+        if (null === $value) {
             return '';
+        }
 
         return $value;
     }

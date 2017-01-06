@@ -4,6 +4,11 @@ namespace ClickHouse\Query;
 
 use ClickHouse\Transport\TransportInterface;
 
+/**
+ * Class SelectQuery
+ *
+ * @package ClickHouse\Query
+ */
 class SelectQuery extends Query
 {
     protected static $format = 'JSON';

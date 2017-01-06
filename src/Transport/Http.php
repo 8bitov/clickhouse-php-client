@@ -57,17 +57,21 @@ class Http implements TransportInterface
      */
     public function __construct($host = null, $port = null, $username = null, $password = null, array $requestOptions = [])
     {
-        if (null !== $host)
+        if (null !== $host) {
             $this->host = $host;
+        }
 
-        if (null !== $port)
+        if (null !== $port) {
             $this->port = $port;
+        }
 
-        if(null !== $username)
+        if (null !== $username) {
             $this->username = $username;
+        }
 
-        if(null !== $password)
+        if (null !== $password) {
             $this->password = $password;
+        }
 
 
         if (array_key_exists('timeout', $requestOptions)) {
@@ -173,5 +177,4 @@ class Http implements TransportInterface
     {
         return ['query' => $query->toSql()];
     }
-
 }
