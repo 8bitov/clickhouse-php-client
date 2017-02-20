@@ -22,9 +22,19 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $select = new Select();
         $select->from('table1', []);
-        $select->where("test = %s",123);
+        $select->where("test = %s", 123);
 
         $this->assertEquals('SELECT * FROM table1 WHERE (test = 123)', $select->getSql());
+    }
+
+    public function testOrWhere()
+    {
+        $select = new Select();
+        $select->from('table1', []);
+        $select->where("test = %s", 123);
+        $select->orWhere("test = %s", 3);
+
+        $this->assertEquals('SELECT * FROM table1 WHERE (test = 123 OR test = 3)', $select->getSql());
     }
 
     public function testColumns()
