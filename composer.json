@@ -1,6 +1,5 @@
 {
   "name": "yaware/clickhouse-php-client",
-  "license": "MIT",
   "version" : "0.1.0",
   "keywords":    ["clickhouse", "driver", "client", "http"],
   "homepage":    "https://github.com/YawareTeam",
