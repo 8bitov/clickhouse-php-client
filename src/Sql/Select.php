@@ -15,18 +15,16 @@ class Select
     private $grammar;
 
     private $table;
-
     private $columns;
-
     private $where;
-
     private $groupBy;
-
     private $order;
+    private $limit;
 
     const PART_COLUMNS = 'columns';
     const PART_WHERE = 'where';
     const PART_GROUP_BY = 'group_by';
+    const PART_ORDER_BY = 'group_by';
 
     /**
      * Select constructor.
@@ -40,6 +38,7 @@ class Select
         $this->columns = new Columns();
         $this->groupBy = new GroupBy();
         $this->order = new Order();
+        $this->limit = new Limit();
     }
 
     /**
@@ -81,11 +80,29 @@ class Select
     public function groupBy($column)
     {
         $this->groupBy->addGroup($column);
+
+        return $this;
     }
 
     public function order($column, $type)
     {
         $this->order->setOrderColumns($column, $type);
+
+        return $this;
+    }
+
+    public function limit($limit)
+    {
+        $this->limit->setLimit($limit);
+
+        return $this;
+    }
+
+    public function offset($offset)
+    {
+        $this->limit->setOffset($offset);
+
+        return $this;
     }
 
     public function reset(array $types)
@@ -105,6 +122,8 @@ class Select
                     new \InvalidArgumentException(sprintf('type \'%s\' is undefined for reset', $types[$i]));
             }
         }
+
+        return $this;
     }
 
     /**
@@ -129,7 +148,7 @@ class Select
             return '';
         } else {
             return "SELECT " . $this->columns->getSql() . " FROM " . $this->table . $this->where->getSql() .
-                $this->groupBy->getSql() . $this->order->getSql();
+                $this->groupBy->getSql() . $this->order->getSql() . $this->limit->getSql();
         }
     }
 
