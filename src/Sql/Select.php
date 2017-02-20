@@ -22,6 +22,8 @@ class Select
 
     private $groupBy;
 
+    private $order;
+
     const PART_COLUMNS = 'columns';
     const PART_WHERE = 'where';
     const PART_GROUP_BY = 'group_by';
@@ -37,6 +39,7 @@ class Select
         $this->where = new Where();
         $this->columns = new Columns();
         $this->groupBy = new GroupBy();
+        $this->order = new Order();
     }
 
     /**
@@ -80,6 +83,11 @@ class Select
         $this->groupBy->addGroup($column);
     }
 
+    public function order($column, $type)
+    {
+        $this->order->setOrderColumns($column, $type);
+    }
+
     public function reset(array $types)
     {
         for ($i = 0; $i < count($types); $i++) {
@@ -120,8 +128,8 @@ class Select
         if (!$this->table) {
             return '';
         } else {
-            return "SELECT " . $this->columns->getSql() . " FROM " . $this->table . $this->where->getSql().
-                $this->groupBy->getSql();
+            return "SELECT " . $this->columns->getSql() . " FROM " . $this->table . $this->where->getSql() .
+                $this->groupBy->getSql() . $this->order->getSql();
         }
     }
 
