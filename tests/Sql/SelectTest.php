@@ -48,4 +48,39 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('SELECT sum(seconds) AS test FROM table1', $select->getSql());
     }
 
+    public function testReset_Columns()
+    {
+        $select = new Select();
+        $select->setTable('table1');
+        $select->columns([
+            'test' => 'sum(seconds)'
+        ]);
+        $select->reset([
+            Select::PART_COLUMNS
+        ]);
+        $this->assertEquals('SELECT * FROM table1', $select->getSql());
+    }
+
+    public function testReset_Where()
+    {
+        $select = new Select();
+        $select->setTable('table1');
+        $select->where('test = %s', 1);
+        $select->reset([
+            Select::PART_WHERE
+        ]);
+        $this->assertEquals('SELECT * FROM table1', $select->getSql());
+    }
+
+    public function testReset_GroupBy()
+    {
+        $select = new Select();
+        $select->setTable('table1');
+        $select->groupBy('application');
+        $select->reset([
+            Select::PART_GROUP_BY
+        ]);
+        $this->assertEquals('SELECT * FROM table1', $select->getSql());
+    }
+
 }

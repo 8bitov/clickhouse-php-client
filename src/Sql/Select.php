@@ -20,6 +20,12 @@ class Select
 
     private $where;
 
+    private $groupBy;
+
+    const PART_COLUMNS = 'columns';
+    const PART_WHERE = 'where';
+    const PART_GROUP_BY = 'group_by';
+
     /**
      * Select constructor.
      * @param null $table
@@ -30,6 +36,7 @@ class Select
         $this->grammar = new Grammar();
         $this->where = new Where();
         $this->columns = new Columns();
+        $this->groupBy = new GroupBy();
     }
 
     /**
@@ -55,6 +62,7 @@ class Select
 
     public function where($predicate, $bind)
     {
+
         $this->where->addPredicate(sprintf($predicate, $this->grammar->quote($bind)), Where::COMBINATION_AND);
 
         return $this;
@@ -67,20 +75,36 @@ class Select
         return $this;
     }
 
+    public function groupBy($column)
+    {
+        $this->groupBy->addGroup($column);
+    }
+
+    public function reset(array $types)
+    {
+        for ($i = 0; $i < count($types); $i++) {
+            switch ($types[$i]) {
+                case (self::PART_COLUMNS):
+                    $this->columns = new Columns();
+                    break;
+                case (self::PART_WHERE):
+                    $this->where = new Where();
+                    break;
+                case (self::PART_GROUP_BY):
+                    $this->groupBy = new GroupBy();
+                    break;
+                default:
+                    new \InvalidArgumentException(sprintf('type \'%s\' is undefined for reset', $types[$i]));
+            }
+        }
+    }
+
     /**
      * @param null $table
      */
     public function setTable($table)
     {
         $this->table = $table;
-    }
-
-    /**
-     * @param Columns $columns
-     */
-    public function setColumns($columns)
-    {
-        $this->columns = $columns;
     }
 
     /**
@@ -96,7 +120,8 @@ class Select
         if (!$this->table) {
             return '';
         } else {
-            return "SELECT " . $this->columns->getSql() . " FROM " . $this->table . $this->where->getSql();
+            return "SELECT " . $this->columns->getSql() . " FROM " . $this->table . $this->where->getSql().
+                $this->groupBy->getSql();
         }
     }
 
