@@ -41,4 +41,17 @@ class Grammar
 
         return $value;
     }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function intQuote($value)
+    {
+        if (is_array($value)) {
+            return implode(',',$value);
+        }
+
+        return (string) $value;
+    }
 }
