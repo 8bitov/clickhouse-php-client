@@ -55,6 +55,10 @@ class Select
     }
 
 
+    /**
+     * @param $columns
+     * @return $this
+     */
     public function columns($columns)
     {
         $this->columns->setColumns($columns);
@@ -62,21 +66,33 @@ class Select
         return $this;
     }
 
-    public function where($predicate, $bind)
+    /**
+     * @param $predicate
+     * @return $this
+     */
+    public function where($predicate)
     {
 
-        $this->where->addPredicate(sprintf($predicate, $this->grammar->quote($bind)), Where::COMBINATION_AND);
+        $this->where->addPredicate($predicate, Where::COMBINATION_AND);
 
         return $this;
     }
 
-    public function orWhere($predicate, $bind)
+    /**
+     * @param $predicate
+     * @return $this
+     */
+    public function orWhere($predicate)
     {
-        $this->where->addPredicate(sprintf($predicate, $this->grammar->quote($bind)), Where::COMBINATION_OR);
+        $this->where->addPredicate($predicate, Where::COMBINATION_OR);
 
         return $this;
     }
 
+    /**
+     * @param $column
+     * @return $this
+     */
     public function groupBy($column)
     {
         $this->groupBy->addGroup($column);
@@ -84,6 +100,11 @@ class Select
         return $this;
     }
 
+    /**
+     * @param $column
+     * @param $type
+     * @return $this
+     */
     public function order($column, $type)
     {
         $this->order->setOrderColumns($column, $type);
@@ -91,6 +112,10 @@ class Select
         return $this;
     }
 
+    /**
+     * @param $limit
+     * @return $this
+     */
     public function limit($limit)
     {
         $this->limit->setLimit($limit);
@@ -98,6 +123,10 @@ class Select
         return $this;
     }
 
+    /**
+     * @param $offset
+     * @return $this
+     */
     public function offset($offset)
     {
         $this->limit->setOffset($offset);
@@ -105,6 +134,10 @@ class Select
         return $this;
     }
 
+    /**
+     * @param array $types
+     * @return $this
+     */
     public function reset(array $types)
     {
         for ($i = 0; $i < count($types); $i++) {
@@ -142,6 +175,17 @@ class Select
         $this->where = $where;
     }
 
+    /**
+     * @return Grammar
+     */
+    public function getGrammar()
+    {
+        return $this->grammar;
+    }
+
+    /**
+     * @return string
+     */
     public function getSql()
     {
         if (!$this->table) {

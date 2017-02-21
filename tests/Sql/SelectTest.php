@@ -22,7 +22,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $select = new Select();
         $select->from('table1', []);
-        $this->assertInstanceOf('ClickHouse\Sql\Select', $select->where("test = %s", 123));
+        $this->assertInstanceOf('ClickHouse\Sql\Select', $select->where($select->getGrammar()->bind("test = %s", 123)));
 
         $this->assertEquals('SELECT * FROM table1 WHERE (test = 123)', $select->getSql());
     }
@@ -31,8 +31,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $select = new Select();
         $select->from('table1', []);
-        $select->where("test = %s", 123);
-        $this->assertInstanceOf('ClickHouse\Sql\Select', $select->orWhere("test = %s", 3));
+        $select->where($select->getGrammar()->bind("test = %s", 123));
+        $this->assertInstanceOf('ClickHouse\Sql\Select', $select->orWhere(
+            $select->getGrammar()->bind("test = %s", 3)));
 
         $this->assertEquals('SELECT * FROM table1 WHERE (test = 123 OR test = 3)', $select->getSql());
     }
@@ -65,7 +66,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $select = new Select();
         $select->setTable('table1');
-        $select->where('test = %s', 1);
+        $select->where($select->getGrammar()->bind('test = %s', 1));
         $select->reset([
             Select::PART_WHERE
         ]);
