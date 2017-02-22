@@ -41,6 +41,11 @@ class Select
         $this->limit = new Limit();
     }
 
+    function __toString()
+    {
+        return '(' . $this->getSql() . ')';
+    }
+
     /**
      * @param $table
      * @param array $columns
@@ -48,7 +53,7 @@ class Select
      */
     public function from($table, $columns = [])
     {
-        $this->table = $table;
+        $this->table = (string) $table;
         $this->columns->setColumns($columns);
 
         return $this;

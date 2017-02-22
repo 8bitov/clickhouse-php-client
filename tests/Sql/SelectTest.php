@@ -119,4 +119,12 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('SELECT * FROM table1 LIMIT 10,10', $select->getSql());
     }
 
+    public function testSubSelect()
+    {
+        $select = new Select();
+        $subSelect = new Select();
+        $subSelect->from('table2');
+        $select->from($subSelect);
+        $this->assertEquals('SELECT * FROM (SELECT * FROM table2)', $select->getSql());
+    }
 }
