@@ -9,6 +9,7 @@ use ClickHouse\Transport\TransportInterface;
  */
 class ExecuteQuery extends Query
 {
+    protected static $format = 'JSON';
 
     /**
      * Query constructor.
