@@ -84,6 +84,17 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('SELECT * FROM table1', $select->getSql());
     }
 
+    public function testReset_Order()
+    {
+        $select = new Select();
+        $select->setTable('table1');
+        $select->order('application',Order::TYPE_ASC);
+        $select->reset([
+            Select::PART_ORDER_BY
+        ]);
+        $this->assertEquals('SELECT * FROM table1', $select->getSql());
+    }
+
     public function testOrder()
     {
         $select = new Select();

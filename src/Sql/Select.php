@@ -24,7 +24,7 @@ class Select
     const PART_COLUMNS = 'columns';
     const PART_WHERE = 'where';
     const PART_GROUP_BY = 'group_by';
-    const PART_ORDER_BY = 'group_by';
+    const PART_ORDER_BY = 'order_by';
 
     /**
      * Select constructor.
@@ -147,6 +147,9 @@ class Select
                     break;
                 case (self::PART_WHERE):
                     $this->where = new Where();
+                    break;
+                case (self::PART_ORDER_BY):
+                    $this->order = new Order();
                     break;
                 case (self::PART_GROUP_BY):
                     $this->groupBy = new GroupBy();
