@@ -157,8 +157,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $select->from('test');
         $select2 = new Select();
         $select2->from('test2');
-        $select->union($select2);
 
+        $this->assertInstanceOf('ClickHouse\Sql\Select', $select->union($select2));
         $this->assertEquals('SELECT * FROM test UNION ALL SELECT * FROM test2',$select->getSql());
     }
 }

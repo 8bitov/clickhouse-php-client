@@ -158,6 +158,8 @@ class Select
             $select = $select->getSql();
         }
         $this->union->add($select);
+
+        return $this;
     }
 
     /**
