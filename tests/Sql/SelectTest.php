@@ -88,7 +88,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $select = new Select();
         $select->setTable('table1');
-        $select->order('application',Order::TYPE_ASC);
+        $select->order('application', Order::TYPE_ASC);
         $select->reset([
             Select::PART_ORDER_BY
         ]);
@@ -110,6 +110,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('ClickHouse\Sql\Select', $select->limit(10));
         $this->assertEquals('SELECT * FROM table1 LIMIT 10', $select->getSql());
     }
+
     public function testOffset()
     {
         $select = new Select();
@@ -126,5 +127,38 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $subSelect->from('table2');
         $select->from($subSelect);
         $this->assertEquals('SELECT * FROM (SELECT * FROM table2)', $select->getSql());
+    }
+
+    public function testClone()
+    {
+        $select = new Select();
+        $select->from('test');
+        $select->where('eq = 1');
+
+        $select2 = clone $select;
+        $select2->where('eq2 = 2');
+
+        $this->assertNotSame($select, $select2);
+        $this->assertNotEquals($select->getSql(), $select2->getSql());
+    }
+
+    public function testUnion()
+    {
+        $select = new Select();
+        $select->from('test');
+        $select->union('SELECT * FROM test2');
+
+        $this->assertEquals('SELECT * FROM test UNION ALL SELECT * FROM test2',$select->getSql());
+    }
+
+    public function testUnionWithObject()
+    {
+        $select = new Select();
+        $select->from('test');
+        $select2 = new Select();
+        $select2->from('test2');
+        $select->union($select2);
+
+        $this->assertEquals('SELECT * FROM test UNION ALL SELECT * FROM test2',$select->getSql());
     }
 }

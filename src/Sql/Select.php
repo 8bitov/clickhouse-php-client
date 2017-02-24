@@ -20,6 +20,7 @@ class Select
     private $groupBy;
     private $order;
     private $limit;
+    private $union;
 
     const PART_COLUMNS = 'columns';
     const PART_WHERE = 'where';
@@ -39,11 +40,23 @@ class Select
         $this->groupBy = new GroupBy();
         $this->order = new Order();
         $this->limit = new Limit();
+        $this->union = new Union();
     }
 
     function __toString()
     {
         return '(' . $this->getSql() . ')';
+    }
+
+    function __clone()
+    {
+        $this->grammar = clone $this->grammar;
+        $this->where = clone $this->where;
+        $this->columns = clone $this->columns;
+        $this->groupBy = clone $this->groupBy;
+        $this->order = clone $this->order;
+        $this->limit = clone $this->limit;
+        $this->union = clone $this->union;
     }
 
     /**
@@ -53,7 +66,7 @@ class Select
      */
     public function from($table, $columns = [])
     {
-        $this->table = (string) $table;
+        $this->table = (string)$table;
         $this->columns->setColumns($columns);
 
         return $this;
@@ -139,6 +152,14 @@ class Select
         return $this;
     }
 
+    public function union($select)
+    {
+        if ($select instanceof Select) {
+            $select = $select->getSql();
+        }
+        $this->union->add($select);
+    }
+
     /**
      * @param array $types
      * @return $this
@@ -200,7 +221,7 @@ class Select
             return '';
         } else {
             return "SELECT " . $this->columns->getSql() . " FROM " . $this->table . $this->where->getSql() .
-                $this->groupBy->getSql() . $this->order->getSql() . $this->limit->getSql();
+                $this->groupBy->getSql() . $this->order->getSql() . $this->limit->getSql() . $this->union->getSql();
         }
     }
 
