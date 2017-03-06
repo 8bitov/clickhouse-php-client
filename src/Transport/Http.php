@@ -179,6 +179,8 @@ class Http implements TransportInterface
         foreach ($queryParams as $param => $value) {
             if (!empty($url)) {
                 $url .= '&';
+            } else {
+                $url .= '?';
             }
             $url .= $param . '=' . $value;
         }

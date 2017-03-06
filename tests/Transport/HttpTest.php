@@ -100,10 +100,10 @@ class HttpTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                ['query_log' => 1], 'query_log=1'
+                ['query_log' => 1], '?query_log=1'
             ],
             [
-                ['query_log' => 1, 'test_param' => 2], 'query_log=1&test_param=2',
+                ['query_log' => 1, 'test_param' => 2], '?query_log=1&test_param=2',
             ],
             [
                 [], '',
