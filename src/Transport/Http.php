@@ -63,10 +63,10 @@ class Http implements TransportInterface
         if (null !== $port)
             $this->port = $port;
 
-        if(null !== $username)
+        if (null !== $username)
             $this->username = $username;
 
-        if(null !== $password)
+        if (null !== $password)
             $this->password = $password;
 
 
@@ -87,8 +87,8 @@ class Http implements TransportInterface
 
         $httpClientSettings = [
             'base_uri' => $this->host . ':' . $this->port,
-            'timeout' => $this->timeout,
-            'handler' => $stack,
+            'timeout'  => $this->timeout,
+            'handler'  => $stack,
         ];
 
         if (null !== $this->username) {
@@ -103,14 +103,14 @@ class Http implements TransportInterface
      * @param  string $sql
      *
      * @param array $bindings
+     * @param array $queryParams
      * @return Statement
-     * @throws \RuntimeException
      */
-    public function select($sql, array $bindings = [])
+    public function select($sql, array $bindings = [], $queryParams = [])
     {
         $query = new SelectQuery($this, $sql, $bindings);
 
-        $response = $this->httpClient->request('POST', null, [
+        $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
             'body' => $query->toSql(),
         ]);
 
@@ -122,18 +122,17 @@ class Http implements TransportInterface
 
     /**
      * @param string $table
-     * @param array $values
      * @param array $columns
      *
+     * @param array $values
+     * @param array $queryParams
      * @return Statement
-     * @throws \RuntimeException
-     *
      */
-    public function insert($table, array $columns = [], array $values)
+    public function insert($table, array $columns = [], array $values, array $queryParams = [])
     {
         $query = new InsertQuery($this, $table, $columns, $values);
 
-        $response = $this->httpClient->request('POST', null, [
+        $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
             'body' => $query->toSql(),
         ]);
 
@@ -146,14 +145,14 @@ class Http implements TransportInterface
      * @param $sql
      * @param array $bindings
      *
+     * @param array $queryParams
      * @return Statement
-     * @throws \RuntimeException
      */
-    public function execute($sql, $bindings = [])
+    public function execute($sql, $bindings = [], $queryParams = [])
     {
         $query = new ExecuteQuery($this, $sql, $bindings);
 
-        $response = $this->httpClient->request('POST', null, [
+        $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
             'body' => $query->toSql(),
         ]);
 
@@ -174,4 +173,32 @@ class Http implements TransportInterface
         return ['query' => $query->toSql()];
     }
 
+    protected function _formatQueryParams($queryParams)
+    {
+        $url = '';
+        foreach ($queryParams as $param => $value) {
+            if (!empty($url)) {
+                $url .= '&';
+            }
+            $url .= $param . '=' . $value;
+        }
+
+        return $url;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getHttpClient()
+    {
+        return $this->httpClient;
+    }
+
+    /**
+     * @param Client $httpClient
+     */
+    public function setHttpClient($httpClient)
+    {
+        $this->httpClient = $httpClient;
+    }
 }
