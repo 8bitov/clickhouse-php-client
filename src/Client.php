@@ -65,45 +65,36 @@ class Client
      * Run a select statement against the database.
      * @param  string $sql
      * @param  array $bindings
+     * @param array $queryParams
      * @return Statement
-     * @throws \RuntimeException
      */
-    public function select($sql, $bindings = [])
+    public function select($sql, $bindings = [], $queryParams = [])
     {
-        return $this->transport->select($sql, $bindings);
+        return $this->transport->select($sql, $bindings, $queryParams);
     }
 
     /**
      * @param string $table
-     * @param array $values
      * @param array $columns
      *
-     * @return mixed|void
+     * @param array $values
+     * @param array $queryParams
+     * @return Statement
      */
-    public function insert($table, $columns = [], $values)
+    public function insert($table, $columns = [], $values, $queryParams = [])
     {
-        return $this->transport->insert($table, $columns, $values);
-    }
-
-    /**
-     * @param string $sql
-     * @param $data
-     * @param null $formatName
-     * @return mixed
-     */
-    public function insertBatch($table, $data, $formatName = null)
-    {
-        return $this->transport->insertBatch($table, $data, $formatName);
+        return $this->transport->insert($table, $columns, $values, $queryParams);
     }
 
     /**
      * @param $sql
      * @param array $bindings
+     * @param array $queryParams
      * @return Statement
      */
-    public function execute($sql, $bindings = [])
+    public function execute($sql, $bindings = [], $queryParams = [])
     {
-        return $this->transport->execute($sql, $bindings);
+        return $this->transport->execute($sql, $bindings, $queryParams);
     }
 
     /**
