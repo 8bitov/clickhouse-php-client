@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ExprTest extends TestCase
 {
-    public function testExpr()
+    public function testExprWithInsert()
     {
         /** @var TransportInterface $transportMock */
         $transportMock = $this->getMockBuilder(TransportInterface::class)
@@ -25,5 +25,38 @@ class ExprTest extends TestCase
             . '(19,\'func("escaped string")\'),  '
             . '(27,func("not escaped string"))';
         $this->assertEquals($expectedSql, $insert->toSql());
+    }
+
+    public function testExprWithWhere()
+    {
+        $select = new Select();
+        $select
+            ->from('test')
+            ->where('1 = 1');
+
+        $expectedSql = 'SELECT * FROM test WHERE (1 = 1)';
+        $this->assertEquals($expectedSql, $select->getSql());
+    }
+
+    public function testExprWithOrder()
+    {
+        $select = new Select();
+        $select
+            ->from('test')
+            ->order(new Expr('min < max'), 'DESC');
+
+        $expectedSql = 'SELECT * FROM test ORDER BY min < max DESC';
+        $this->assertEquals($expectedSql, $select->getSql());
+    }
+
+    public function testExprWithGroupBy()
+    {
+        $select = new Select();
+        $select
+            ->from('test')
+            ->groupBy(new Expr('date(time_start)'));
+
+        $expectedSql = 'SELECT * FROM test GROUP BY date(time_start)';
+        $this->assertEquals($expectedSql, $select->getSql());
     }
 }
