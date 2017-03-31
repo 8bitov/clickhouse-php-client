@@ -1,5 +1,7 @@
 <?php
 
+namespace ClickHouse\Sql;
+
 class Expr
 {
     /** @var string */
