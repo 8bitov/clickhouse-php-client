@@ -126,8 +126,11 @@ class Statement
     public function fetchColumn($name)
     {
         $current = $this->fetchOne();
+        if (property_exists($current, $name)) {
+            return $current->{$name};
+        }
 
-        return $current->{$name};
+        return null;
     }
 
     /**
@@ -137,7 +140,6 @@ class Statement
     {
         return $this->rows;
     }
-
 
 
     /**
