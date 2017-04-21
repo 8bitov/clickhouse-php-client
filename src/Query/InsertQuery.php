@@ -38,12 +38,7 @@ class InsertQuery extends Query
         }
 
         $sql .= 'VALUES ';
-
-        foreach ($values as $row) {
-            $sql .= ' (' . implode(',', $this->quote($row)) . '), ';
-        }
-
-        $sql = trim($sql, ', ');
+        $sql .= " ('" . implode("','", $values) . "') ";
 
         return $sql;
     }
