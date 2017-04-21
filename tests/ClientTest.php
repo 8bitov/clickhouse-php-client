@@ -19,7 +19,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $this->client = new \ClickHouse\Client('http://127.0.0.1', 8123);
 
-
         $this->client->execute(
         /** @lang SQL */
             "CREATE TABLE IF NOT EXISTS " . $this->tablename . " (
@@ -35,7 +34,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             RowStringArray Array(String)     
             ) ENGINE = MergeTree(RowDate, (RowId, RowDate), 8124);"
         );
-
     }
 
     public function tearDown()
@@ -49,18 +47,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function fixtures($count = 1000)
     {
-
     }
 
-    /**
-     *
-     */
     public function testPing()
     {
         $result = $this->client->ping();
 
         $this->assertTrue($result);
-
     }
 
     public function testFetchAll()
@@ -69,7 +62,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $data = $result->fetchAll();
 
         $this->assertCount(10, $data);
-
     }
 
     public function testFetchWithBindings()
@@ -78,7 +70,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $first = $result->fetchOne();
 
         $this->assertEquals(100, $first->number);
-
     }
 
     public function testFetchOne()
@@ -102,7 +93,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateDropTable()
     {
-
         $tablename = 'test_create';
         $this->client->execute(
             'CREATE TABLE ' . $tablename . ' (abc UInt8) ENGINE = Memory;'
@@ -120,9 +110,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testInsertFormatValues()
     {
         $faker = Faker\Factory::create();
@@ -143,15 +130,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $last = end($all);
         $this->assertEquals($id2, $last->RowId);
-
-
     }
-
 
     public function insertBatch()
     {
         // $this->client->insert();
     }
-
-
 }

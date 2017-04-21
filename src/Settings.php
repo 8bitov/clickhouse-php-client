@@ -1,9 +1,12 @@
 <?php
 
-
 namespace ClickHouse;
 
-
+/**
+ * Class Settings
+ *
+ * @package ClickHouse
+ */
 class Settings
 {
     /**
@@ -225,7 +228,6 @@ class Settings
 
     public function __isset($name)
     {
-
     }
 
     private function setUpSettings($settings)

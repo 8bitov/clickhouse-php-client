@@ -75,7 +75,6 @@ class Statement
         $this->transport = $transport;
         $this->query = $query;
         $this->prepareJsonResponse($data);
-
     }
 
     /**
@@ -99,7 +98,6 @@ class Statement
         }
 
         return $this;
-
     }
 
 
@@ -205,5 +203,4 @@ class Statement
     {
         return $this->totals;
     }
-
 }

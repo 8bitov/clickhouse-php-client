@@ -10,8 +10,6 @@ use ClickHouse\Transport\TransportInterface;
  */
 abstract class Query
 {
-
-
     /**
      * @var
      */
@@ -45,7 +43,6 @@ abstract class Query
     {
         $this->sql = $sql;
         $this->transport = $transport;
-
     }
 
     /**
@@ -74,7 +71,6 @@ abstract class Query
      */
     protected function prepareQueryFormat()
     {
-
         if (null !== static::$format) {
             $this->sql = $this->sql . ' FORMAT ' . static::$format;
         }
@@ -99,14 +95,17 @@ abstract class Query
                 $keys[] = '/[?]/';
             }
 
-            if (is_string($value))
+            if (is_string($value)) {
                 $values[$key] = "'" . $value . "'";
+            }
 
-            if (is_array($value))
+            if (is_array($value)) {
                 $values[$key] = "'" . implode("','", $value) . "'";
+            }
 
-            if (null === $value)
+            if (null === $value) {
                 $values[$key] = '';
+            }
         }
         $this->sql = preg_replace($keys, $values, $this->sql, 1, $count);
 

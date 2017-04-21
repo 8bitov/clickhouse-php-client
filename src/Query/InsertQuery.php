@@ -9,7 +9,6 @@ use ClickHouse\Transport\TransportInterface;
  */
 class InsertQuery extends Query
 {
-
     /**
      * InsertQuery constructor.
      * @param TransportInterface $transport
@@ -23,7 +22,6 @@ class InsertQuery extends Query
         $sql = $this->prepareSql($table, $columns, $values);
         $this->init($transport, $sql);
     }
-
 
     /**
      * @param string $table
@@ -40,12 +38,7 @@ class InsertQuery extends Query
         }
 
         $sql .= 'VALUES ';
-
-        foreach ($values as $row) {
-            $sql .= ' (' . implode(',', $this->quote($row)) . '), ';
-        }
-
-        $sql = trim($sql, ', ');
+        $sql .= " ('" . implode("','", $values) . "') ";
 
         return $sql;
     }
@@ -62,5 +55,4 @@ class InsertQuery extends Query
         };
         return array_map($quote, $row);
     }
-
 }

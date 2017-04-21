@@ -22,5 +22,4 @@ class ExecuteQuery extends Query
         $this->init($transport, $sql);
         $this->bindParams($bindings);
     }
-
 }
