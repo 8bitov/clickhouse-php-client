@@ -126,7 +126,7 @@ class Statement
     public function fetchColumn($name)
     {
         $current = $this->fetchOne();
-        if (property_exists($current, $name)) {
+        if ($current && property_exists($current, $name)) {
             return $current->{$name};
         }
 
