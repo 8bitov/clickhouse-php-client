@@ -105,14 +105,24 @@ class Http implements TransportInterface
      * @param array $bindings
      * @param array $queryParams
      * @return Statement
+     * @throws \Exception
      */
     public function select($sql, array $bindings = [], $queryParams = [])
     {
         $query = new SelectQuery($this, $sql, $bindings);
 
-        $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
-            'body' => $query->toSql(),
-        ]);
+        try {
+            $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
+                'body' => $query->toSql(),
+            ]);
+        } catch (\Exception $e) {
+            throw $this->_prepareQueryException($e, [
+                'sqlTemplate'   => $query->toSql(),
+                'sql'           => $sql,
+                'bindings'      => $bindings,
+                'queryParams'   => $queryParams
+            ]);
+        }
 
         $data = $response->getBody()->getContents();
 
@@ -127,14 +137,25 @@ class Http implements TransportInterface
      * @param array $values
      * @param array $queryParams
      * @return Statement
+     * @throws \Exception
      */
     public function insert($table, array $columns = [], array $values, array $queryParams = [])
     {
         $query = new InsertQuery($this, $table, $columns, $values);
 
-        $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
-            'body' => $query->toSql(),
-        ]);
+        try {
+            $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
+                'body' => $query->toSql(),
+            ]);
+        } catch (\Exception $e) {
+            throw $this->_prepareQueryException($e, [
+                'sql'           => $query->toSql(),
+                'table'         => $table,
+                'columns'       => $columns,
+                'values'        => $values,
+                'queryParams'   => $queryParams,
+            ]);
+        }
 
         $data = $response->getBody()->getContents();
 
@@ -147,18 +168,34 @@ class Http implements TransportInterface
      *
      * @param array $queryParams
      * @return Statement
+     * @throws \Exception
      */
     public function execute($sql, $bindings = [], $queryParams = [])
     {
         $query = new ExecuteQuery($this, $sql, $bindings);
 
-        $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
-            'body' => $query->toSql(),
-        ]);
+        try {
+            $response = $this->httpClient->request('POST', $this->_formatQueryParams($queryParams), [
+                'body' => $query->toSql(),
+            ]);
+        } catch (\Exception $e) {
+            throw $this->_prepareQueryException($e, [
+                'sqlTemplate'   => $query->toSql(),
+                'sql'           => $sql,
+                'bindings'      => $bindings,
+                'queryParams'   => $queryParams
+            ]);
+        }
 
         $data = $response->getBody()->getContents();
 
         return new Statement($data, $query, $this);
+    }
+
+    protected function _prepareQueryException(\Exception $prev, $data)
+    {
+        $message = 'Error while ClickHouse request.' . PHP_EOL . 'Params: ' . print_r($data, true);
+        return new \Exception($message, 0, $prev);
     }
 
 
