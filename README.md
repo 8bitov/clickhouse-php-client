@@ -82,6 +82,6 @@ $client->system()->clusters();
 
 ## Настройки 
 
-$client->settings()->max_memory_usage; //получить значение настроки
+$client->system()->settings()->max_memory_usage; //получить значение настроки
 
-$client->settings()->max_memory_usage = 10G;  //изменить настройку для текущий сессии
+$client->system()->settings()->max_memory_usage = 10G;  //изменить настройку для текущий сессии
