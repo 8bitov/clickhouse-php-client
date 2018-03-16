@@ -126,10 +126,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testInsertFormatValues()
     {
         $faker = Faker\Factory::create();
-        $columns = ['RowId', 'RowDate', 'RowString'];
+        $columns = ['RowId', 'RowDate', 'RowString','RowStringArray'];
         $data = [
-            [$id1 = $faker->randomDigitNotNull, $date1 = $faker->date, $string1 = $faker->word],
-            [$id2 = $faker->randomDigitNotNull, $date2 = $faker->date, $string2 = $faker->word],
+            [$id1 = $faker->randomDigitNotNull, $date1 = $faker->date, $string1 = $faker->word, $words1 = [$faker->word,$faker->word]],
+            [$id2 = $faker->randomDigitNotNull, $date2 = $faker->date, $string2 = $faker->word, $words2 = [$faker->word,$faker->word]],
         ];
         $this->client->insert($this->tablename, $columns, $data);
 
@@ -140,11 +140,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $all  = $statement->fetchAll();
         $first = current($all);
         $this->assertEquals($id1, $first->RowId);
-
+        $this->assertEquals($words1, $first->RowStringArray);
         $last = end($all);
         $this->assertEquals($id2, $last->RowId);
-
-
+        $this->assertEquals($words2, $last->RowStringArray);
     }
 
 
