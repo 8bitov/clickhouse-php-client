@@ -34,7 +34,7 @@ class Grammar
             return "'" . $value . "'";
 
         if (is_array($value))
-            return "'" . implode("','", $value) . "'";
+            return "[" . implode(",", array_map([$this,'quote'], $value)) . "]";
 
         if (null === $value)
             return '';
