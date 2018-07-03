@@ -194,7 +194,9 @@ class Http implements TransportInterface
 
     protected function _prepareQueryException(\Exception $prev, $data)
     {
-        $message = 'Error while ClickHouse request.' . PHP_EOL . 'Params: ' . print_r($data, true);
+        $message = 'Error while ClickHouse request.' . PHP_EOL
+            . 'Message: ' . PHP_EOL . $prev->getMessage()
+            . PHP_EOL . 'Params: ' . print_r($data, true);
         return new \Exception($message, 0, $prev);
     }
 
