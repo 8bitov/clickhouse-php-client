@@ -17,6 +17,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
+        /**
+         * @TODO refactor this. don't use connection for real db in tests.
+         */
         $this->client = new \ClickHouse\Client('http://127.0.0.1', 8123);
 
 
@@ -119,39 +122,4 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'DROP TABLE ' . $tablename . ';'
         );
     }
-
-    /**
-     *
-     */
-    public function testInsertFormatValues()
-    {
-        $faker = Faker\Factory::create();
-        $columns = ['RowId', 'RowDate', 'RowString'];
-        $data = [
-            [$id1 = $faker->randomDigitNotNull, $date1 = $faker->date, $string1 = $faker->word],
-            [$id2 = $faker->randomDigitNotNull, $date2 = $faker->date, $string2 = $faker->word],
-        ];
-        $this->client->insert($this->tablename, $columns, $data);
-
-        $statement = $this->client->select('SELECT * FROM '.$this->tablename);
-
-        $this->assertEquals(2, $statement->rowsCount());
-
-        $all  = $statement->fetchAll();
-        $first = current($all);
-        $this->assertEquals($id1, $first->RowId);
-
-        $last = end($all);
-        $this->assertEquals($id2, $last->RowId);
-
-
-    }
-
-
-    public function insertBatch()
-    {
-        // $this->client->insert();
-    }
-
-
 }

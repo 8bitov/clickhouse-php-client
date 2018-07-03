@@ -1,12 +1,10 @@
 {
-  "name": "8bitov/clickhouse-php-client",
-  "license": "MIT",
-  "version" : "0.0.3",
+  "name": "yaware/clickhouse-php-client",
   "keywords":    ["clickhouse", "driver", "client", "http"],
-  "homepage":    "https://github.com/8bitov/doctrine2-clickhouse",
+  "homepage":    "https://github.com/YawareTeam",
   "authors": [
     {
-      "name": "Aleksey Kuznetsov"
+      "name": "Vitaliy Melnychuk"
     }
   ],
   "require": {
