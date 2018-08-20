@@ -1,0 +1,27 @@
+{
+  "name": "8bitov/clickhouse-php-client",
+  "license": "MIT",
+  "version" : "0.0.3",
+  "keywords":    ["clickhouse", "driver", "client", "http"],
+  "homepage":    "https://github.com/8bitov/doctrine2-clickhouse",
+  "authors": [
+    {
+      "name": "Aleksey Kuznetsov"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "guzzlehttp/guzzle": "~6.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.4.6",
+    "mockery/mockery": "~0.9",
+    "satooshi/php-coveralls": "~1.0",
+    "fzaninotto/faker": "^1.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "ClickHouse\\": "src/"
+    }
+  }
+}
