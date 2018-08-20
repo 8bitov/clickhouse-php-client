@@ -30,9 +30,9 @@ class Grammar
      */
     public function quote($value)
     {
-        if (is_string($value)) {
+        if (is_string($value))
             return "'" . addslashes($value) . "'";
-        }
+
 
         if (is_array($value))
             return json_encode($value);
