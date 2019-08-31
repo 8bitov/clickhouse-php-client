@@ -30,12 +30,13 @@ class Grammar
      */
     public function quote($value)
     {
-        if (is_string($value))
-            return "'" . $value . "'";
+        if (is_string($value)) {
+            return "'" . addslashes($value) . "'";
+        }
 
-        if (is_array($value))
-            return "'" . implode("','", $value) . "'";
-
+        if (is_array($value)) {
+            return json_encode($value);
+        }
         if (null === $value)
             return '';
 

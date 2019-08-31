@@ -36,7 +36,7 @@ abstract class Query
     {
         $this->grammar = new Grammar();
     }
-    
+
     /**
      * @param TransportInterface $transport
      * @param string $sql
@@ -102,8 +102,15 @@ abstract class Query
             if (is_string($value))
                 $values[$key] = "'" . $value . "'";
 
-            if (is_array($value))
-                $values[$key] = "'" . implode("','", $value) . "'";
+            if (is_array($value)) {
+                $values[$key] = [];
+                foreach ($value as $v) {
+                    $values[$key][] = is_numeric($v) ? $v : "'{$v}'";
+                }
+                $values[$key] = implode(',', $values[$key]);
+            }
+
+
 
             if (null === $value)
                 $values[$key] = '';
